@@ -76,42 +76,7 @@ dependencies {
     implementation(name: 'agilli-sdk-1.4-debug', ext: 'aar')
 }
 
-tasks.whenTaskAdded { task ->
-    if (task.name == 'packageGertecDebugResources') {
-        task.dependsOn(':agilli:generateGertecDebugResValues')
-    }
-    if (task.name == 'compileGertecDebugLibraryResources') {
-        task.dependsOn(':agilli:packageGertecDebugResources')
-    }
-    if (task.name == 'extractDeepLinksGertecDebug') {
-        task.dependsOn(':agilli-integration:generateGertecDebugResValues')
-        task.dependsOn(':agilli:generateGertecDebugResValues')
-    }
-    if (task.name == 'parseGertecDebugLocalResources') {
-        task.dependsOn(':agilli-integration:packageGertecDebugResources')
-    }
-    if (task.name == 'generateGertecDebugRFile') {
-        task.dependsOn(':agilli-integration:processGertecDebugManifest')
-    }
-    if (task.name == 'generateGertecDebugRFile') {
-        task.dependsOn(':agilli-integration:parseGertecDebugLocalResources')
-    }
-    if (task.name == 'parseGertecDebugLocalResources') {
-        task.dependsOn(':agilli:packageGertecDebugResources')
-    }
-    if (task.name == 'generateGertecDebugRFile') {
-        task.dependsOn(':agilli:parseGertecDebugLocalResources')
-        task.dependsOn(':agilli:processGertecDebugManifest')
-    }
-    if (task.name == 'packageGertecDebugAssets') {
-        task.dependsOn(':agilli:compileGertecDebugShaders')
-    }
-     if (task.name == 'compileGertecDebugJavaWithJavac') {
-        task.dependsOn ':agilli:javaPreCompileGertecDebug'
-        task.dependsOn ':agilli:generateGertecDebugRFile'
-    }
-    
-}
+
 
 
 
