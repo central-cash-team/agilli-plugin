@@ -12,6 +12,8 @@ import com.getcapacitor.PluginCall;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.PluginMethod;
 
+import com.getcapacitor.JSObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
