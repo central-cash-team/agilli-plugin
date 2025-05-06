@@ -1,26 +1,40 @@
+export interface PaymentResult {
+    status: 'success';
+    transactionId: string;
+    numDoc: number;
+    nsu: string;
+    authorizationCode: string;
+    cardFlag?: string;
+    cardNumber?: string;
+    amount?: string;
+    cnpj?: string;
+    transactionReturn?: string;
+    dataHoraAutorizacao?: string;
+    responseType: number;
+}
 export interface AgilliIntegrationPlugin {
     startCreditPayment(options: {
         amount: string;
         installments: number;
-    }): Promise<void>;
+    }): Promise<PaymentResult>;
     startDebitPayment(options: {
         amount: string;
-    }): Promise<void>;
+    }): Promise<PaymentResult>;
     startVoucherPayment(options: {
         amount: string;
-    }): Promise<void>;
+    }): Promise<PaymentResult>;
     startPixPayment(options: {
         amount: string;
-    }): Promise<void>;
+    }): Promise<PaymentResult>;
     startParcelamentoInteligentePayment(options: {
         amount: string;
-    }): Promise<void>;
+    }): Promise<PaymentResult>;
     startReversal(options: {
         numDoc?: number;
-    }): Promise<void>;
+    }): Promise<PaymentResult>;
     startReprint(options: {
         numDoc?: number;
-    }): Promise<void>;
+    }): Promise<PaymentResult>;
     lockApp(): Promise<void>;
     unlockApp(): Promise<void>;
     printTextAndImage(): Promise<void>;
