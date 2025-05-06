@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.agilli.sdk.AgilliPayments;
-import com.agilli.sdk.AgilliUtil;
+import br.com.agilli.sdk.AgilliPayments;
+import br.com.agilli.sdk.AgilliUtil;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.annotation.CapacitorPlugin;
