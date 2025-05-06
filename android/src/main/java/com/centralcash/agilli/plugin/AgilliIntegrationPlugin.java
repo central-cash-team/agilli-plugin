@@ -100,7 +100,7 @@ public class AgilliIntegrationPlugin extends Plugin {
 
     @PluginMethod
     public void startReversal(PluginCall call) {
-        int numDoc = call.getInt("numDoc", 0); // documento opcional
+        String numDoc = call.getString("numDoc", "0");
 
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
@@ -115,7 +115,7 @@ public class AgilliIntegrationPlugin extends Plugin {
 
     @PluginMethod
     public void startReprint(PluginCall call) {
-        int numDoc = call.getInt("numDoc", 0); // documento opcional
+        String numDoc = call.getString("numDoc", "0");
 
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
