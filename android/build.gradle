@@ -23,7 +23,7 @@ android {
     compileSdk project.hasProperty('compileSdkVersion') ? rootProject.ext.compileSdkVersion : 35
 
     defaultConfig {
-        minSdkVersion project.hasProperty('minSdkVersion') ? rootProject.ext.minSdkVersion : 23
+        minSdkVersion 22
         targetSdkVersion project.hasProperty('targetSdkVersion') ? rootProject.ext.targetSdkVersion : 35
         versionCode 1
         versionName "1.0"
@@ -39,18 +39,15 @@ android {
 
     flavorDimensions "version"
     productFlavors {
-        newland { dimension "version" }
         gertec { dimension "version" }
         gertecGPOS760 { dimension "version" }
         gertecGPOS700mini { dimension "version" }
     }
 
     publishing {
-    singleVariant("newlandDebug")
     singleVariant("gertecDebug")
     singleVariant("gertecGPOS760Debug")
     singleVariant("gertecGPOS700miniDebug")
-    singleVariant("newlandRelease")
     singleVariant("gertecRelease")
     singleVariant("gertecGPOS760Release")
     singleVariant("gertecGPOS700miniRelease")
