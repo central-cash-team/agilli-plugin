@@ -25,7 +25,7 @@ public class AgilliIntegrationPlugin extends Plugin {
     private PluginCall savedCall;
 
     @PluginMethod
-    public void startCreditPayment(PluginCall call) {
+        public void startCreditPayment(PluginCall call) {
         String amount = call.getString("amount", "0");
         int installments = call.getInt("installments", 1);
 
@@ -39,13 +39,13 @@ public class AgilliIntegrationPlugin extends Plugin {
             .setInstallments(installments)
             .build();
 
-        launchAgilliIntent(activity, intent, call);
+        savedCall = call;
+        activity.startActivityForResult(intent, 1001);
     }
 
     @PluginMethod
     public void startDebitPayment(PluginCall call) {
         String amount = call.getString("amount", "0");
-        Log.d(TAG, "startDebitPayment chamado com amount=" + amount);
 
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
@@ -54,13 +54,13 @@ public class AgilliIntegrationPlugin extends Plugin {
             .setDebitPayment(amount)
             .build();
 
-        launchAgilliIntent(activity, intent, call);
+        savedCall = call;
+        activity.startActivityForResult(intent, 1002);
     }
 
     @PluginMethod
     public void startVoucherPayment(PluginCall call) {
         String amount = call.getString("amount", "0");
-        Log.d(TAG, "startVoucherPayment chamado com amount=" + amount);
 
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
@@ -69,13 +69,13 @@ public class AgilliIntegrationPlugin extends Plugin {
             .setVoucherPayment(amount)
             .build();
 
-        launchAgilliIntent(activity, intent, call);
+        savedCall = call;
+        activity.startActivityForResult(intent, 1003);
     }
 
     @PluginMethod
     public void startPixPayment(PluginCall call) {
         String amount = call.getString("amount", "0");
-        Log.d(TAG, "startPixPayment chamado com amount=" + amount);
 
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
@@ -84,13 +84,13 @@ public class AgilliIntegrationPlugin extends Plugin {
             .setPixPayment(amount)
             .build();
 
-        launchAgilliIntent(activity, intent, call);
+        savedCall = call;
+        activity.startActivityForResult(intent, 1004);
     }
 
     @PluginMethod
     public void startParcelamentoInteligentePayment(PluginCall call) {
         String amount = call.getString("amount", "0");
-        Log.d(TAG, "startParcelamentoInteligentePayment chamado com amount=" + amount);
 
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
@@ -99,13 +99,13 @@ public class AgilliIntegrationPlugin extends Plugin {
             .setParcelamentoInteligentePayment(amount)
             .build();
 
-        launchAgilliIntent(activity, intent, call);
+        savedCall = call;
+        activity.startActivityForResult(intent, 1005);
     }
 
     @PluginMethod
     public void startReversal(PluginCall call) {
         String numDoc = call.getString("numDoc", "0");
-        Log.d(TAG, "startReversal chamado com numDoc=" + numDoc);
 
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
@@ -114,13 +114,13 @@ public class AgilliIntegrationPlugin extends Plugin {
             .setNumDoc(numDoc)
             .build();
 
-        launchAgilliIntent(activity, intent, call);
+        savedCall = call;
+        activity.startActivityForResult(intent, 1006);
     }
 
     @PluginMethod
     public void startReprint(PluginCall call) {
         String numDoc = call.getString("numDoc", "0");
-        Log.d(TAG, "startReprint chamado com numDoc=" + numDoc);
 
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
@@ -129,13 +129,12 @@ public class AgilliIntegrationPlugin extends Plugin {
             .setNumDoc(numDoc)
             .build();
 
-        launchAgilliIntent(activity, intent, call);
+        savedCall = call;
+        activity.startActivityForResult(intent, 1007);
     }
 
     @PluginMethod
     public void lockApp(PluginCall call) {
-        Log.d(TAG, "lockApp chamado");
-
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
 
@@ -143,13 +142,12 @@ public class AgilliIntegrationPlugin extends Plugin {
             .setLockApp(true)
             .build();
 
-        launchAgilliIntent(activity, intent, call);
+        savedCall = call;
+        activity.startActivityForResult(intent, 1008);
     }
 
     @PluginMethod
     public void unlockApp(PluginCall call) {
-        Log.d(TAG, "unlockApp chamado");
-
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
 
@@ -157,13 +155,12 @@ public class AgilliIntegrationPlugin extends Plugin {
             .setLockApp(false)
             .build();
 
-        launchAgilliIntent(activity, intent, call);
+        savedCall = call;
+        activity.startActivityForResult(intent, 1009);
     }
 
     @PluginMethod
     public void printTextAndImage(PluginCall call) {
-        Log.d(TAG, "printTextAndImage chamado");
-
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
 
@@ -187,19 +184,8 @@ public class AgilliIntegrationPlugin extends Plugin {
             .setObjectListToPrint(list)
             .build();
 
-        launchAgilliIntent(activity, intent, call);
-    }
-
-    private void launchAgilliIntent(Activity activity, Intent intent, PluginCall call) {
-        if (activity instanceof MainActivity) {
-            Log.d(TAG, "Enviando intent para MainActivity lançar");
-            ((MainActivity) activity).setPendingIntent(intent);
-            ((MainActivity) activity).launchAgilliPayment();
-            call.resolve();
-        } else {
-            Log.e(TAG, "Activity não é MainActivity!");
-            call.reject("Activity não é MainActivity!");
-        }
+        savedCall = call;
+        activity.startActivityForResult(intent, 1010);
     }
 
 
