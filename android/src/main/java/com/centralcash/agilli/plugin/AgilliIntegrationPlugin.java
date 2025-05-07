@@ -13,18 +13,23 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.PluginMethod;
 
 import com.getcapacitor.JSObject;
+import android.util.Log;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 @CapacitorPlugin(name = "AgilliIntegrationPlugin")
 public class AgilliIntegrationPlugin extends Plugin {
+    private static final String TAG = "AgilliIntegration";
     private PluginCall savedCall;
 
     @PluginMethod
         public void startCreditPayment(PluginCall call) {
         String amount = call.getString("amount", "0");
         int installments = call.getInt("installments", 1);
+
+        Log.d(TAG, "startCreditPayment chamado com amount=" + amount + ", installments=" + installments);
 
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
@@ -186,6 +191,9 @@ public class AgilliIntegrationPlugin extends Plugin {
 
     @Override
     protected void handleOnActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "handleOnActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
+
+
         if (savedCall == null) {
             return;
         }
@@ -198,6 +206,7 @@ public class AgilliIntegrationPlugin extends Plugin {
         JSObject result = new JSObject();
 
         if (actionStatus == AgilliPayments.ACTION_RESULT_OK) {
+            Log.d(TAG, "Pagamento concluído com sucesso. TxID=" + payments.getTxTransactionId());
             result.put("status", "success");
             result.put("transactionId", payments.getTxTransactionId());
             result.put("numDoc", payments.getNumDoc());
@@ -240,6 +249,7 @@ public class AgilliIntegrationPlugin extends Plugin {
 
             savedCall.resolve(result);
         } else {
+            Log.e(TAG, "Pagamento falhou. Erro: " + payments.getErrorMessage());
             result.put("status", "error");
             result.put("errorMessage", payments.getErrorMessage());
             savedCall.reject("Pagamento falhou.", payments.getErrorMessage());
