@@ -4,6 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import br.com.agilli.sdk.AgilliPayments;
 import br.com.agilli.sdk.AgilliUtil;
@@ -11,10 +16,7 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.PluginMethod;
-
 import com.getcapacitor.JSObject;
-import android.util.Log;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +25,21 @@ import java.util.List;
 public class AgilliIntegrationPlugin extends Plugin {
     private static final String TAG = "AgilliIntegration";
     private PluginCall savedCall;
+    private ActivityResultLauncher<Intent> activityResultLauncher;
+
+    @Override
+    public void load() {
+        super.load();
+
+        // Inicializa o launcher assim que o plugin é carregado
+        activityResultLauncher = getActivity().registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            this::handleActivityResult
+        );
+    }
 
     @PluginMethod
-        public void startCreditPayment(PluginCall call) {
+    public void startCreditPayment(PluginCall call) {
         String amount = call.getString("amount", "0");
         int installments = call.getInt("installments", 1);
 
@@ -40,13 +54,12 @@ public class AgilliIntegrationPlugin extends Plugin {
             .build();
 
         savedCall = call;
-        activity.startActivityForResult(intent, 1001);
+        activityResultLauncher.launch(intent);
     }
 
     @PluginMethod
     public void startDebitPayment(PluginCall call) {
         String amount = call.getString("amount", "0");
-
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
 
@@ -55,13 +68,12 @@ public class AgilliIntegrationPlugin extends Plugin {
             .build();
 
         savedCall = call;
-        activity.startActivityForResult(intent, 1002);
+        activityResultLauncher.launch(intent);
     }
 
     @PluginMethod
     public void startVoucherPayment(PluginCall call) {
         String amount = call.getString("amount", "0");
-
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
 
@@ -70,13 +82,12 @@ public class AgilliIntegrationPlugin extends Plugin {
             .build();
 
         savedCall = call;
-        activity.startActivityForResult(intent, 1003);
+        activityResultLauncher.launch(intent);
     }
 
     @PluginMethod
     public void startPixPayment(PluginCall call) {
         String amount = call.getString("amount", "0");
-
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
 
@@ -85,13 +96,12 @@ public class AgilliIntegrationPlugin extends Plugin {
             .build();
 
         savedCall = call;
-        activity.startActivityForResult(intent, 1004);
+        activityResultLauncher.launch(intent);
     }
 
     @PluginMethod
     public void startParcelamentoInteligentePayment(PluginCall call) {
         String amount = call.getString("amount", "0");
-
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
 
@@ -100,13 +110,12 @@ public class AgilliIntegrationPlugin extends Plugin {
             .build();
 
         savedCall = call;
-        activity.startActivityForResult(intent, 1005);
+        activityResultLauncher.launch(intent);
     }
 
     @PluginMethod
     public void startReversal(PluginCall call) {
         String numDoc = call.getString("numDoc", "0");
-
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
 
@@ -115,13 +124,12 @@ public class AgilliIntegrationPlugin extends Plugin {
             .build();
 
         savedCall = call;
-        activity.startActivityForResult(intent, 1006);
+        activityResultLauncher.launch(intent);
     }
 
     @PluginMethod
     public void startReprint(PluginCall call) {
         String numDoc = call.getString("numDoc", "0");
-
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
 
@@ -130,7 +138,7 @@ public class AgilliIntegrationPlugin extends Plugin {
             .build();
 
         savedCall = call;
-        activity.startActivityForResult(intent, 1007);
+        activityResultLauncher.launch(intent);
     }
 
     @PluginMethod
@@ -143,7 +151,7 @@ public class AgilliIntegrationPlugin extends Plugin {
             .build();
 
         savedCall = call;
-        activity.startActivityForResult(intent, 1008);
+        activityResultLauncher.launch(intent);
     }
 
     @PluginMethod
@@ -156,7 +164,7 @@ public class AgilliIntegrationPlugin extends Plugin {
             .build();
 
         savedCall = call;
-        activity.startActivityForResult(intent, 1009);
+        activityResultLauncher.launch(intent);
     }
 
     @PluginMethod
@@ -185,79 +193,58 @@ public class AgilliIntegrationPlugin extends Plugin {
             .build();
 
         savedCall = call;
-        activity.startActivityForResult(intent, 1010);
+        activityResultLauncher.launch(intent);
     }
 
-
-    @Override
-    protected void handleOnActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "handleOnActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
-
+    private void handleActivityResult(ActivityResult result) {
+        Log.d(TAG, "handleActivityResult: resultCode=" + result.getResultCode());
 
         if (savedCall == null) {
+            Log.w(TAG, "No savedCall to resolve.");
             return;
         }
 
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
-        payments.getPaymentsForData(data);
-        int actionStatus = payments.getActionStatus();
 
-        JSObject result = new JSObject();
+        Intent data = result.getData();
+        if (data != null) {
+            payments.getPaymentsForData(data);
+        }
 
-        if (actionStatus == AgilliPayments.ACTION_RESULT_OK) {
+        JSObject resultObj = new JSObject();
+
+        if (payments.getActionStatus() == AgilliPayments.ACTION_RESULT_OK) {
             Log.d(TAG, "Pagamento concluído com sucesso. TxID=" + payments.getTxTransactionId());
-            result.put("status", "success");
-            result.put("transactionId", payments.getTxTransactionId());
-            result.put("numDoc", payments.getNumDoc());
-            result.put("nsu", payments.getNsu());
-            result.put("authorizationCode", payments.getCtfAuthorizer());
+            resultObj.put("status", "success");
+            resultObj.put("transactionId", payments.getTxTransactionId());
+            resultObj.put("numDoc", payments.getNumDoc());
+            resultObj.put("nsu", payments.getNsu());
+            resultObj.put("authorizationCode", payments.getCtfAuthorizer());
 
-            // 💡 Adicionando informações adicionais:
-            String cardFlag = payments.getCardFlag();
-            if (cardFlag != null) {
-                result.put("cardFlag", cardFlag);
-            }
+            // Extras
+            putIfNotNull(resultObj, "cardFlag", payments.getCardFlag());
+            putIfNotNull(resultObj, "cardNumber", payments.getCardNumber());
+            putIfNotNull(resultObj, "amount", payments.getAmount());
+            putIfNotNull(resultObj, "cnpj", payments.getCnpj());
+            putIfNotNull(resultObj, "transactionReturn", payments.getTransactionReturn());
+            putIfNotNull(resultObj, "dataHoraAutorizacao", payments.getDataHoraAutorizacao());
+            resultObj.put("responseType", payments.getResponseType());
 
-            String cardNumber = payments.getCardNumber();
-            if (cardNumber != null) {
-                result.put("cardNumber", cardNumber);
-            }
-
-            String amount = payments.getAmount();
-            if (amount != null) {
-                result.put("amount", amount);
-            }
-
-            String cnpj = payments.getCnpj();
-            if (cnpj != null) {
-                result.put("cnpj", cnpj);
-            }
-
-            String transactionReturn = payments.getTransactionReturn();
-            if (transactionReturn != null) {
-                result.put("transactionReturn", transactionReturn);
-            }
-
-            String dataHoraAutorizacao = payments.getDataHoraAutorizacao();
-            if (dataHoraAutorizacao != null) {
-                result.put("dataHoraAutorizacao", dataHoraAutorizacao);
-            }
-
-            int responseType = payments.getResponseType();
-            result.put("responseType", responseType);
-
-            savedCall.resolve(result);
+            savedCall.resolve(resultObj);
         } else {
             Log.e(TAG, "Pagamento falhou. Erro: " + payments.getErrorMessage());
-            result.put("status", "error");
-            result.put("errorMessage", payments.getErrorMessage());
+            resultObj.put("status", "error");
+            resultObj.put("errorMessage", payments.getErrorMessage());
             savedCall.reject("Pagamento falhou.", payments.getErrorMessage());
         }
 
         savedCall = null;
     }
 
-
-
+    private void putIfNotNull(JSObject obj, String key, String value) {
+        if (value != null) {
+            obj.put(key, value);
+        }
+    }
 }
