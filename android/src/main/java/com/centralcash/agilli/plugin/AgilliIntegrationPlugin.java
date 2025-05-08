@@ -51,7 +51,6 @@ public class AgilliIntegrationPlugin extends Plugin {
         Intent intent = payments.intentForPaymentBuilder()
             .setCreditPayment(amount)
             .setInstallments(installments)
-            .setObjectListToPrint()
             .build();
 
         savedCall = call;
