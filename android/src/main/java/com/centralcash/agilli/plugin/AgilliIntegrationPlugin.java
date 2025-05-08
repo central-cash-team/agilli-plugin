@@ -48,27 +48,10 @@ public class AgilliIntegrationPlugin extends Plugin {
         Activity activity = getActivity();
         AgilliPayments payments = AgilliPayments.getInstance(activity);
 
-
-        String text = "      TESTE CADASTRO\n"
-                + "CNPJ=00.305.345/699\n"
-                + "R: MACHADO DE ASSIS,904 CENTRO\n"
-                + "TERMINAL=BW000048\n"
-                + "LOTE=000004 SEQ=119 AUT=046119\n"
-                + "DOC=000118 04/09/2024 10:37:30\n"
-                + "A VISTA - Valecard\n"
-                + "CARTAO=6064*******466830 VALOR: R$ 50,00";
-
-        // int id = activity.getResources().getIdentifier("logo_imp", "drawable", activity.getPackageName());
-        // Bitmap bitmap = BitmapFactory.decodeResource(activity.getResources(), id);
-
-        List<String> list = new ArrayList<>();
-        // AgilliUtil.addImageToPrintList(list, bitmap);
-        AgilliUtil.addTextToPrintList(list, text);
-
         Intent intent = payments.intentForPaymentBuilder()
             .setCreditPayment(amount)
             .setInstallments(installments)
-            .setObjectListToPrint(list)
+            .setObjectListToPrint()
             .build();
 
         savedCall = call;
