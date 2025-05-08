@@ -231,6 +231,9 @@ public class AgilliIntegrationPlugin extends Plugin {
             putIfNotNull(resultObj, "dataHoraAutorizacao", payments.getDataHoraAutorizacao());
             resultObj.put("responseType", payments.getResponseType());
 
+            // Alias opcional (ou use outro método real, se existir)
+            resultObj.put("transactionUniqueId", payments.getTxTransactionId());
+
             savedCall.resolve(resultObj);
         } else {
             Log.e(TAG, "Pagamento falhou. Erro: " + payments.getErrorMessage());
@@ -241,6 +244,7 @@ public class AgilliIntegrationPlugin extends Plugin {
 
         savedCall = null;
     }
+
 
     private void putIfNotNull(JSObject obj, String key, String value) {
         if (value != null) {
