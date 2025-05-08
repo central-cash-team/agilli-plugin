@@ -58,11 +58,11 @@ public class AgilliIntegrationPlugin extends Plugin {
                 + "A VISTA - Valecard\n"
                 + "CARTAO=6064*******466830 VALOR: R$ 50,00";
 
-        int id = activity.getResources().getIdentifier("logo_imp", "drawable", activity.getPackageName());
-        Bitmap bitmap = BitmapFactory.decodeResource(activity.getResources(), id);
+        // int id = activity.getResources().getIdentifier("logo_imp", "drawable", activity.getPackageName());
+        // Bitmap bitmap = BitmapFactory.decodeResource(activity.getResources(), id);
 
         List<String> list = new ArrayList<>();
-        AgilliUtil.addImageToPrintList(list, bitmap);
+        // AgilliUtil.addImageToPrintList(list, bitmap);
         AgilliUtil.addTextToPrintList(list, text);
 
         Intent intent = payments.intentForPaymentBuilder()
