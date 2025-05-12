@@ -245,6 +245,24 @@ public class AgilliIntegrationPlugin extends Plugin {
         savedCall = null;
     }
 
+    @PluginMethod
+    public void getSerialNumber(PluginCall call) {
+        String serial;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                serial = Build.getSerial();
+            } else {
+                serial = Build.SERIAL;
+            }
+            JSObject result = new JSObject();
+            result.put("serial", serial);
+            call.resolve(result);
+        } catch (SecurityException e) {
+            call.reject("Permissão negada para acessar o número de série.");
+        }
+    }
+
+
 
     private void putIfNotNull(JSObject obj, String key, String value) {
         if (value != null) {
