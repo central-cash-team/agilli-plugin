@@ -38,4 +38,7 @@ export interface AgilliIntegrationPlugin {
     lockApp(): Promise<void>;
     unlockApp(): Promise<void>;
     printTextAndImage(): Promise<void>;
+    getSerialNumber(): Promise<{
+        serial: string;
+    }>;
 }
